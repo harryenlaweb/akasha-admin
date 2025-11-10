@@ -1,1 +1,1 @@
-# akasha-admin
+# akashamoda-admin

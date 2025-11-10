@@ -1,0 +1,101 @@
+<app-sidebar></app-sidebar>
+
+<div class="border-bottom pt-5 mt-2 mb-5">
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">About</h1>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+      <p class="text-muted">Este módulo se establece la sección Acerca de Nosotros.</p>
+
+    </div>
+  </div>
+
+<form #confForm="ngForm" (ngSubmit)="actualizar(confForm)">
+    <div class="card box-shadow-sm">        
+
+        <div class="card-body">
+          <div style="max-width: 48rem;">
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Historia</label>
+              <div class="col-md-9">
+                <textarea class="form-control" placeholder="Historia" rows="5" name="historia_about" [(ngModel)]="config.historia_about"></textarea>                
+              </div>
+            </div>  
+            
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Misión</label>
+              <div class="col-md-9">
+                <textarea class="form-control" placeholder="Misión" rows="5" name="mision_about" [(ngModel)]="config.mision_about"></textarea>                
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Visión</label>
+              <div class="col-md-9">
+                <textarea class="form-control" placeholder="Visión" rows="5" name="vision_about" [(ngModel)]="config.vision_about"></textarea>                                
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Valores</label>
+              <div class="col-md-9">
+                <textarea class="form-control" placeholder="Valores" rows="5" name="valores_about" [(ngModel)]="config.valores_about"></textarea>                
+              </div>
+            </div>
+
+
+            
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="file-input">Imagen</label>
+              <div class="col-md-9">
+                <div class="cs-file-drop-area">
+                    <div class="cs-file-drop-preview img-thumbnail rounded">
+                        <img [src]="imgSelect" alt="">
+                    </div>
+
+                    <span class="cs-file-drop-message">Arrastra la imagen aquí</span>
+                    <span class="cs-file-drop-message text-muted">Resolución recomendada: 1370 x 385 píxeles</span>
+                    <input type="file" class="cs-file-drop-input" (change)="fileChangeEvent($event)" accept="image/*">
+                    <button type="button" class="cs-file-drop-btn btn btn-outline-primary btn-sm">Subir imagen</button>
+                  </div>
+              </div>
+              
+            </div>
+          </div>
+         
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary mr-3" type="submit">Guardar cambios</button>
+        </div>
+  </div> 
+</form>
+
+<!-- Modal para recortar imagen -->
+<div class="modal fade" [class.show]="showCropper" [style.display]="showCropper ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Recortar Imagen - 1370 x 385 px</h5>
+        <button type="button" class="close" (click)="cancelCrop()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="1370 / 385"
+          [resizeToWidth]="1370"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelCrop()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmCrop()">Confirmar Recorte</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showCropper" *ngIf="showCropper"></div>

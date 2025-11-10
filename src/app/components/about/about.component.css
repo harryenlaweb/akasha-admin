@@ -1,0 +1,23 @@
+/* Estilos para el modal del cropper */
+.modal.show {
+  display: block !important;
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.modal-dialog {
+  max-width: 90%;
+  margin: 1.75rem auto;
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+image-cropper {
+  max-height: 60vh;
+}

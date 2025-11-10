@@ -1,0 +1,186 @@
+<app-sidebar></app-sidebar>
+
+<div class="border-bottom pt-5 mt-2 mb-5">
+  <h1 class="mt-2 mt-md-4 mb-3 pt-5">Atributos de Productos de Moda</h1>
+  <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+    <p class="text-muted">Este módulo gestiona los atributos de categorización de productos de moda.</p>
+  </div>
+</div>
+
+<div class="card box-shadow-sm">
+  <div class="card-header">
+    <h5 style="margin-bottom: 0px;">Gestión de Atributos</h5>
+  </div>
+
+  <div class="card-body">
+    <!-- Spinner de carga -->
+    <div *ngIf="load_data" class="text-center py-5">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div *ngIf="!load_data && config" style="max-width: 68rem;">
+      
+      <!-- Categorías Principales con Subcategorías -->
+      <div class="mb-4">
+        <h5 class="mb-3">Categorías Principales y Subcategorías</h5>
+        
+        <!-- Agregar nueva categoría principal -->
+        <div class="form-group row align-items-center">
+          <div class="col-md-8">
+            <input class="form-control" type="text" placeholder="Ej: Hombre, Mujer, Niños" [(ngModel)]="titulo_categoria_principal">
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary" (click)="agregar_categoria_principal()">
+              <i class="fe-icon-plus"></i> Agregar Categoría
+            </button>
+          </div>
+        </div>
+
+        <!-- Lista de categorías principales con sus subcategorías -->
+        <div class="mt-3" *ngIf="config.categorias_principales && config.categorias_principales.length > 0">
+          <div *ngFor="let categoria of config.categorias_principales; let catIndex = index" class="mb-3">
+            <div class="card">
+              <!-- Header de la categoría -->
+              <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer; background-color: #f8f9fa;"
+                (click)="toggleCategoria(catIndex)">
+                <h6 class="mb-0">
+                  <i class="mr-2" [ngClass]="categoria_expandida === catIndex ? 'fe-icon-chevron-down' : 'fe-icon-chevron-right'"></i>
+                  <strong>{{categoria.titulo}}</strong>
+                  <span class="badge badge-secondary ml-2">{{categoria.subcategorias?.length || 0}} subcategorías</span>
+                </h6>
+                <button type="button" class="btn btn-sm btn-danger" (click)="$event.stopPropagation(); eliminar_categoria_principal(catIndex)">
+                  <i class="fe-icon-trash"></i> Eliminar
+                </button>
+              </div>
+
+              <!-- Body con subcategorías (se muestra solo si está expandida) -->
+              <div class="card-body" *ngIf="categoria_expandida === catIndex">
+                <!-- Agregar subcategoría -->
+                <div class="form-group row align-items-center mb-3">
+                  <div class="col-md-8">
+                    <input class="form-control form-control-sm" type="text" 
+                      placeholder="Agregar subcategoría: Camisa, Pantalón, etc." 
+                      [(ngModel)]="titulo_subcategoria"
+                      (keyup.enter)="agregar_subcategoria_a_categoria()">
+                  </div>
+                  <div class="col-md-4">
+                    <button class="btn btn-sm btn-success" (click)="agregar_subcategoria_a_categoria()">
+                      <i class="fe-icon-plus"></i> Agregar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Lista de subcategorías -->
+                <div *ngIf="categoria.subcategorias && categoria.subcategorias.length > 0">
+                  <h6 class="text-muted mb-2">Subcategorías:</h6>
+                  <div class="d-flex flex-wrap">
+                    <span class="badge badge-info mr-2 mb-2 p-2" *ngFor="let sub of categoria.subcategorias; let subIndex = index">
+                      <span style="font-size: 14px;">{{sub.titulo}}</span>
+                      <button type="button" class="close ml-2" (click)="eliminar_subcategoria_de_categoria(catIndex, subIndex)" 
+                        style="font-size: 1.2rem; color: white; margin-left: 8px !important;">×</button>
+                    </span>
+                  </div>
+                </div>
+                <div *ngIf="!categoria.subcategorias || categoria.subcategorias.length === 0">
+                  <p class="text-muted mb-0"><em>No hay subcategorías. Agrega una arriba.</em></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="my-4">
+      </div>
+
+      <!-- Colores -->
+      <div class="mb-4">
+        <h5 class="mb-3">Colores</h5>
+        <div class="form-group row align-items-center">
+          <div class="col-md-8">
+            <input class="form-control" type="text" placeholder="Ej: Azul, Rojo, Negro, Blanco" [(ngModel)]="titulo_color">
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary" (click)="agregar_color()">
+              <i class="fe-icon-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+        <div class="mt-2" *ngIf="config.colores && config.colores.length > 0">
+          <span class="badge badge-success mr-2 mb-2" *ngFor="let item of config.colores; let indice = index">
+            {{item.titulo}}
+            <button type="button" class="close ml-2" (click)="eliminar_color(indice)" style="font-size: 1rem; color: white;">×</button>
+          </span>
+        </div>
+        <hr class="my-4">
+      </div>
+
+      <!-- Talles -->
+      <div class="mb-4">
+        <h5 class="mb-3">Talles</h5>
+        <div class="form-group row align-items-center">
+          <div class="col-md-8">
+            <input class="form-control" type="text" placeholder="Ej: XS, S, M, L, XL, XXL" [(ngModel)]="titulo_talle">
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary" (click)="agregar_talle()">
+              <i class="fe-icon-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+        <div class="mt-2" *ngIf="config.talles && config.talles.length > 0">
+          <span class="badge badge-warning mr-2 mb-2" *ngFor="let item of config.talles; let indice = index">
+            {{item.titulo}}
+            <button type="button" class="close ml-2" (click)="eliminar_talle(indice)" style="font-size: 1rem; color: white;">×</button>
+          </span>
+        </div>
+        <hr class="my-4">
+      </div>
+
+      <!-- Marcas -->
+      <div class="mb-4">
+        <h5 class="mb-3">Marcas</h5>
+        <div class="form-group row align-items-center">
+          <div class="col-md-8">
+            <input class="form-control" type="text" placeholder="Ej: Nike, Adidas, Zara, H&M" [(ngModel)]="titulo_marca">
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary" (click)="agregar_marca()">
+              <i class="fe-icon-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+        <div class="mt-2" *ngIf="config.marcas && config.marcas.length > 0">
+          <span class="badge badge-danger mr-2 mb-2" *ngFor="let item of config.marcas; let indice = index">
+            {{item.titulo}}
+            <button type="button" class="close ml-2" (click)="eliminar_marca(indice)" style="font-size: 1rem; color: white;">×</button>
+          </span>
+        </div>
+        <hr class="my-4">
+      </div>
+
+      <!-- Temporadas -->
+      <div class="mb-4">
+        <h5 class="mb-3">Temporadas</h5>
+        <div class="form-group row align-items-center">
+          <div class="col-md-8">
+            <input class="form-control" type="text" placeholder="Ej: Primavera, Verano, Otoño, Invierno" [(ngModel)]="titulo_temporada">
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary" (click)="agregar_temporada()">
+              <i class="fe-icon-plus"></i> Agregar
+            </button>
+          </div>
+        </div>
+        <div class="mt-2" *ngIf="config.temporadas && config.temporadas.length > 0">
+          <span class="badge badge-dark mr-2 mb-2" *ngFor="let item of config.temporadas; let indice = index">
+            {{item.titulo}}
+            <button type="button" class="close ml-2" (click)="eliminar_temporada(indice)" style="font-size: 1rem; color: white;">×</button>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

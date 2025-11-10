@@ -1,0 +1,71 @@
+<app-sidebar></app-sidebar>
+
+<div class="border-bottom pt-5 mt-2 mb-5">
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Imágenes de catálogo</h1>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+      <p class="text-muted">Este módulo crea la imagen del catálogo de la tienda.</p>
+      
+    </div>
+  </div>
+
+<form #registroForm="ngForm" (ngSubmit)="registro(registroForm)">
+    <div class="card box-shadow-sm">
+        <div class="card-header">
+            <h5 style="margin-bottom: 0px;">Registro de imagen</h5>
+        </div>
+        <div class="card-body">
+              <div class="row">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6 form-group">	
+                            <label for="">Titulo de catalogo</label>
+                            <input type="text" class="form-control" placeholder="Titulo de la imagen" required name="titulo" [(ngModel)]="catalogo.titulo">
+                        </div>
+                        <div class="col-lg-6 form-group">	
+                            <label for="">Orden</label>
+                            <input type="number" class="form-control" placeholder="Orden del catalogo" required name="orden" [(ngModel)]="catalogo.orden">
+                        </div>
+
+                        <div class="col-lg-6 form-group">	
+                            <label for="">Posición</label>
+                            <select class="form-control custom-select" required name="posicion" [(ngModel)]="catalogo.posicion">
+                              <option value="Inicio">Inicio</option>
+                              <option value="Final" >Final</option>
+                              
+                            </select>
+                        </div>
+                        
+                        <!-- <div class="col-lg-6 form-group">	
+                          <label for="">Posicion</label>
+                          <input type="number" class="form-control" placeholder="Posicion del catalogo" required name="posicion" [(ngModel)]="catalogo.posicion">
+                        </div>  -->                                              
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="row">
+                    <div class="col-lg-12 form-group">	
+                        <label for="">Banner</label>
+                        <div class="custom-file">
+                          <input class="custom-file-input" type="file" id="file-input" (change)="fileChangeEvent($event)">
+                          <label class="custom-file-label" id="input-portada" for="file-input" style="white-space: nowrap;overflow: hidden;">1920 X 800 píxeles</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <img [src]="imgSelect" class="img-thumbnail" alt="Rounded image">
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="card-footer">
+            <button *ngIf="!load_btn" class="btn btn-primary mr-3" type="submit">Crear catalogo</button>
+            <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                Creando...
+            </button>
+            <a class="btn btn-warning" [routerLink]="['/panel/catalogo']">Regresar</a>
+        </div>
+    </div> 
+</form>
+
+   

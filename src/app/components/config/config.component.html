@@ -1,0 +1,187 @@
+<app-sidebar></app-sidebar>
+
+<div class="border-bottom pt-5 mt-2 mb-5">
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Configuraciones</h1>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+      <p class="text-muted">Este módulo se establece las configuraciones de la tienda.</p>
+
+    </div>
+  </div>
+
+<form #confForm="ngForm" (ngSubmit)="actualizar(confForm)">
+    <div class="card box-shadow-sm">
+        <div class="card-header">
+            <h5 style="margin-bottom: 0px;">Configuraciones</h5>
+        </div>
+
+        <div class="card-body">
+          <div *ngIf="!config" class="text-center py-5">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div>
+
+          <div *ngIf="config" style="max-width: 48rem;">
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Nombre de la tienda</label>
+              <div class="col-md-9">
+                <input class="form-control" required type="text" placeholder="Createx" name="titulo" [(ngModel)]="config.titulo">
+              </div>
+            </div> 
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Compra mínima</label>
+              <div class="col-md-4">
+                <input type="number" class="form-control" placeholder="Compra Mínima" required name="minimo_compra" [(ngModel)]="config.minimo_compra">
+              </div>
+            </div>            
+                  
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">email</label>
+              <div class="col-md-9">
+                <input type="text" class="form-control" placeholder="email" required name="email" [(ngModel)]="config.email">
+              </div>
+            </div>      
+            <!-- <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Facturación</label>
+              <div class="col-md-4">
+                <input class="form-control" required type="number" name="serie" [(ngModel)]="config.serie">
+              </div>
+              <div class="col-md-5">
+                <input class="form-control" required type="number" name="correlativo" [(ngModel)]="config.correlativo">
+              </div>
+            </div> -->
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Logo para fondo claro (Dark)</label>
+              <div class="col-md-9">
+                <div class="cs-file-drop-area">
+                    <div id="select_dark" class="cs-file-drop-preview img-thumbnail rounded">
+                        <img [src]="imgSelect_dark" alt="">
+                    </div>
+
+                    <span class="cs-file-drop-message">Arrastra la imagen aquí</span>
+                    <span class="cs-file-drop-message text-muted">Resolución recomendada: 204 x 40 píxeles</span>
+                    <input type="file" class="cs-file-drop-input" (change)="fileChangeEvent_dark($event)" accept="image/*">
+                    <button type="button" class="cs-file-drop-btn btn btn-outline-primary btn-sm">Subir logo oscuro</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Logo para fondo oscuro (Light)</label>
+              <div class="col-md-9">
+                <div class="cs-file-drop-area">
+                    <div id="select_light" class="cs-file-drop-preview img-thumbnail rounded">
+                        <img [src]="imgSelect_light" alt="">
+                    </div>
+
+                    <span class="cs-file-drop-message">Arrastra la imagen aquí</span>
+                    <span class="cs-file-drop-message text-muted">Resolución recomendada: 204 x 40 píxeles</span>
+                    <input type="file" class="cs-file-drop-input" (change)="fileChangeEvent_light($event)" accept="image/*">
+                    <button type="button" class="cs-file-drop-btn btn btn-outline-primary btn-sm">Subir logo claro</button>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+            <h5 class="mb-3">Información de Contacto</h5>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Dirección</label>
+              <div class="col-md-9">
+                <input class="form-control" type="text" name="direccion" [(ngModel)]="config.contacto.direccion" placeholder="Ej: Av. Corrientes 1234, Buenos Aires">
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Teléfono</label>
+              <div class="col-md-9">
+                <input class="form-control" type="text" name="telefono" [(ngModel)]="config.contacto.telefono" placeholder="Ej: +54 11 1234-5678">
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Email de Contacto</label>
+              <div class="col-md-9">
+                <input class="form-control" type="email" name="email_contacto" [(ngModel)]="config.contacto.email" placeholder="Ej: contacto@akasha.com">
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Horario de Atención</label>
+              <div class="col-md-9">
+                <input class="form-control" type="text" name="horario" [(ngModel)]="config.contacto.horario" placeholder="Ej: Lunes a Viernes: 9:00 - 18:00">
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary mr-3" type="submit">Guardar cambios</button>
+        </div>
+  </div> 
+</form>
+
+<!-- Modal para recortar logo dark -->
+<div class="modal fade" [class.show]="showCropper_dark" [style.display]="showCropper_dark ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Recortar Logo Oscuro - 204 x 40 px</h5>
+        <button type="button" class="close" (click)="cancelCrop_dark()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent_dark"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="204 / 40"
+          [resizeToWidth]="204"
+          format="png"
+          (imageCropped)="imageCropped_dark($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelCrop_dark()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmCrop_dark()">Confirmar Recorte</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showCropper_dark" *ngIf="showCropper_dark"></div>
+
+<!-- Modal para recortar logo light -->
+<div class="modal fade" [class.show]="showCropper_light" [style.display]="showCropper_light ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Recortar Logo Claro - 204 x 40 px</h5>
+        <button type="button" class="close" (click)="cancelCrop_light()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent_light"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="204 / 40"
+          [resizeToWidth]="204"
+          format="png"
+          (imageCropped)="imageCropped_light($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelCrop_light()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmCrop_light()">Confirmar Recorte</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showCropper_light" *ngIf="showCropper_light"></div>

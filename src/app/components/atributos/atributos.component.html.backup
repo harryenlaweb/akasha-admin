@@ -1,0 +1,302 @@
+<app-sidebar></app-sidebar>
+
+<div class="border-bottom pt-5 mt-2 mb-5">
+  <h1 class="mt-2 mt-md-4 mb-3 pt-5">Atributos de Productos</h1>
+  <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+    <p class="text-muted">Este módulo gestiona los atributos de categorización de productos de moda.</p>
+    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modal-registro">
+      <i class="fe-icon-plus"></i> Nuevo Atributo
+    </button>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="card box-shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row align-items-center">
+      <div class="col-md-4">
+        <label for="filtro-tipo">Filtrar por tipo:</label>
+        <select class="form-control" id="filtro-tipo" [(ngModel)]="filtro_tipo" (change)="filtrar()">
+          <option value="todos">Todos los tipos</option>
+          <option *ngFor="let tipo of tipos_atributos" [value]="tipo.value">{{tipo.label}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de Atributos -->
+<div class="card box-shadow-sm">
+  <div class="card-header">
+    <h5 style="margin-bottom: 0px;">Lista de Atributos</h5>
+  </div>
+  <div class="card-body">
+    <div *ngIf="load_data" class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Cargando...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!load_data && filtro_tipo === 'todos'">
+      <div *ngFor="let grupo of agrupar_por_tipo()" class="mb-4">
+        <h5 class="mb-3">{{grupo.label}}</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th>Valor</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of grupo.items">
+                <td>{{item.valor}}</td>
+                <td>{{item.descripcion || '-'}}</td>
+                <td>
+                  <span class="badge" [ngClass]="item.activo ? 'badge-success' : 'badge-secondary'" style="cursor: pointer;" (click)="cambiar_estado(item)" title="Click para cambiar estado">
+                    {{item.activo ? 'Activo' : 'Inactivo'}}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-warning mr-2" data-toggle="modal" [attr.data-target]="'#modal-editar-'+item._id" title="Editar">
+                    <i class="fe-icon-edit"></i> Editar
+                  </button>
+                  <button class="btn btn-sm btn-danger" data-toggle="modal" [attr.data-target]="'#delete-'+item._id" title="Eliminar">
+                    <i class="fe-icon-trash-2"></i> Eliminar
+                  </button>
+
+                  <!-- Modal Editar -->
+                  <div class="modal fade" [id]="'modal-editar-'+item._id" tabindex="-1" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Editar Atributo</h4>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="form-group">
+                            <label for="tipo-editar">Tipo de Atributo <span class="text-danger">*</span></label>
+                            <select class="form-control" [id]="'tipo-editar-'+item._id" [(ngModel)]="item.tipo" required>
+                              <option value="" disabled>Seleccione un tipo</option>
+                              <option *ngFor="let tipo of tipos_atributos" [value]="tipo.value">{{tipo.label}}</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="valor-editar">Valor <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" [id]="'valor-editar-'+item._id" [(ngModel)]="item.valor" placeholder="Ej: Rojo, M, Nike, Verano" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="descripcion-editar">Descripción (opcional)</label>
+                            <textarea class="form-control" [id]="'descripcion-editar-'+item._id" [(ngModel)]="item.descripcion" rows="3" placeholder="Descripción adicional"></textarea>
+                          </div>
+                          <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" [id]="'activo-editar-'+item._id" [(ngModel)]="item.activo">
+                              <label class="custom-control-label" [for]="'activo-editar-'+item._id">Atributo activo</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                          <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="actualizar(item._id)" type="button">Actualizar</button>
+                          <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                            <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                            Actualizando...
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Modal Eliminar -->
+                  <div class="modal fade" [id]="'delete-'+item._id" tabindex="-1" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Confirmación de eliminación</h4>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <p class="fs-sm">¿Desea eliminar el atributo <strong>{{item.valor}}</strong>?</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                          <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Sí, eliminar</button>
+                          <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                            <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                            Eliminando...
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!load_data && filtro_tipo !== 'todos'">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of atributos">
+              <td>{{get_tipo_label(item.tipo)}}</td>
+              <td>{{item.valor}}</td>
+              <td>{{item.descripcion || '-'}}</td>
+              <td>
+                <span class="badge" [ngClass]="item.activo ? 'badge-success' : 'badge-secondary'" style="cursor: pointer;" (click)="cambiar_estado(item)" title="Click para cambiar estado">
+                  {{item.activo ? 'Activo' : 'Inactivo'}}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-warning mr-2" data-toggle="modal" [attr.data-target]="'#modal-editar-'+item._id" title="Editar">
+                  <i class="fe-icon-edit"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" data-toggle="modal" [attr.data-target]="'#delete-'+item._id" title="Eliminar">
+                  <i class="fe-icon-trash-2"></i> Eliminar
+                </button>
+
+                <!-- Modal Editar -->
+                <div class="modal fade" [id]="'modal-editar-'+item._id" tabindex="-1" style="display: none;" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Editar Atributo</h4>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label for="tipo-editar">Tipo de Atributo <span class="text-danger">*</span></label>
+                          <select class="form-control" [id]="'tipo-editar-'+item._id" [(ngModel)]="item.tipo" required>
+                            <option value="" disabled>Seleccione un tipo</option>
+                            <option *ngFor="let tipo of tipos_atributos" [value]="tipo.value">{{tipo.label}}</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="valor-editar">Valor <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" [id]="'valor-editar-'+item._id" [(ngModel)]="item.valor" placeholder="Ej: Rojo, M, Nike, Verano" required>
+                        </div>
+                        <div class="form-group">
+                          <label for="descripcion-editar">Descripción (opcional)</label>
+                          <textarea class="form-control" [id]="'descripcion-editar-'+item._id" [(ngModel)]="item.descripcion" rows="3" placeholder="Descripción adicional"></textarea>
+                        </div>
+                        <div class="form-group">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" [id]="'activo-editar-'+item._id" [(ngModel)]="item.activo">
+                            <label class="custom-control-label" [for]="'activo-editar-'+item._id">Atributo activo</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                        <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="actualizar(item._id)" type="button">Actualizar</button>
+                        <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                          <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                          Actualizando...
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Eliminar -->
+                <div class="modal fade" [id]="'delete-'+item._id" tabindex="-1" style="display: none;" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Confirmación de eliminación</h4>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p class="fs-sm">¿Desea eliminar el atributo <strong>{{item.valor}}</strong>?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                        <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Sí, eliminar</button>
+                        <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                          <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                          Eliminando...
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="!load_data && atributos.length === 0" class="text-center py-5">
+      <p class="text-muted">No hay atributos registrados</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Registro -->
+<div class="modal fade" id="modal-registro" tabindex="-1" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Registrar Nuevo Atributo</h4>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="tipo">Tipo de Atributo <span class="text-danger">*</span></label>
+          <select class="form-control" id="tipo" [(ngModel)]="atributo.tipo" required>
+            <option value="" disabled>Seleccione un tipo</option>
+            <option *ngFor="let tipo of tipos_atributos" [value]="tipo.value">{{tipo.label}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="valor">Valor <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="valor" [(ngModel)]="atributo.valor" placeholder="Ej: Rojo, M, Nike, Verano" required>
+        </div>
+        <div class="form-group">
+          <label for="descripcion">Descripción (opcional)</label>
+          <textarea class="form-control" id="descripcion" [(ngModel)]="atributo.descripcion" rows="3" placeholder="Descripción adicional"></textarea>
+        </div>
+        <div class="form-group">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="activo" [(ngModel)]="atributo.activo">
+            <label class="custom-control-label" for="activo">Atributo activo</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+        <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="registro()" type="button">Registrar</button>
+        <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+          <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+          Registrando...
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

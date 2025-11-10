@@ -1,0 +1,300 @@
+import { Component, OnInit } from '@angular/core';
+import { AdminService } from 'src/app/services/admin.service';
+import { v4 as uuidv4 } from 'uuid';
+
+declare var iziToast: any;
+declare var jQuery: any;
+declare var $: any;
+
+@Component({
+  selector: 'app-atributos',
+  templateUrl: './atributos.component.html',
+  styleUrls: ['./atributos.component.css']
+})
+export class AtributosComponent implements OnInit {
+
+  public token;
+  public config: any = null;
+  public load_btn = false;
+  public load_data = true;
+
+  // Variables para cada tipo de atributo
+  public titulo_categoria_principal = '';
+  public titulo_subcategoria = '';
+  public titulo_color = '';
+  public titulo_talle = '';
+  public titulo_marca = '';
+  public titulo_genero = '';
+  public titulo_temporada = '';
+
+  // Variable para edición
+  public item_editar: any = {};
+
+  public tipos_atributos = [
+    { value: 'categorias_principales', label: 'Categoría Principal', field: 'categorias_principales' },
+    { value: 'subcategorias', label: 'Subcategoría', field: 'subcategorias' },
+    { value: 'colores', label: 'Color', field: 'colores' },
+    { value: 'talles', label: 'Talle', field: 'talles' },
+    { value: 'marcas', label: 'Marca', field: 'marcas' },
+    { value: 'generos', label: 'Género', field: 'generos' },
+    { value: 'temporadas', label: 'Temporada', field: 'temporadas' }
+  ];
+
+  constructor(
+    private _adminService: AdminService
+  ) {
+    this.token = localStorage.getItem('token');
+  }
+
+  ngOnInit(): void {
+    this.init_data();
+  }
+
+  init_data() {
+    this.load_data = true;
+    this._adminService.obtener_config_admin(this.token).subscribe(
+      response => {
+        if(response.data) {
+          this.config = response.data;
+          // Inicializar arrays si no existen
+          if(!this.config.categorias_principales) this.config.categorias_principales = [];
+          if(!this.config.subcategorias) this.config.subcategorias = [];
+          if(!this.config.colores) this.config.colores = [];
+          if(!this.config.talles) this.config.talles = [];
+          if(!this.config.marcas) this.config.marcas = [];
+          if(!this.config.generos) this.config.generos = [];
+          if(!this.config.temporadas) this.config.temporadas = [];
+        }
+        this.load_data = false;
+      },
+      error => {
+        console.log(error);
+        this.load_data = false;
+        iziToast.error({
+          title: 'ERROR',
+          message: 'Error al cargar la configuración'
+        });
+      }
+    );
+  }
+
+  registro() {
+    if (this.atributo.tipo && this.atributo.valor) {
+      this.load_btn = true;
+
+      this._atributoService.registro_atributo_admin(this.atributo, this.token).subscribe(
+        response => {
+          if (response.data) {
+            iziToast.show({
+              title: 'SUCCESS',
+              titleColor: '#1DC74C',
+              color: '#FFF',
+              class: 'text-success',
+              position: 'topRight',
+              message: 'Se registró correctamente el atributo.'
+            });
+
+            this.atributo = {
+              tipo: '',
+              valor: '',
+              descripcion: '',
+              activo: true
+            };
+
+            $('#modal-registro').modal('hide');
+            this.load_btn = false;
+            this.init_data();
+          } else {
+            iziToast.show({
+              title: 'ERROR',
+              titleColor: '#FF0000',
+              color: '#FFF',
+              class: 'text-danger',
+              position: 'topRight',
+              message: response.message || 'El atributo ya existe'
+            });
+            this.load_btn = false;
+          }
+        },
+        error => {
+          console.log(error);
+          iziToast.show({
+            title: 'ERROR',
+            titleColor: '#FF0000',
+            color: '#FFF',
+            class: 'text-danger',
+            position: 'topRight',
+            message: 'Ocurrió un error en el servidor'
+          });
+          this.load_btn = false;
+        }
+      );
+    } else {
+      iziToast.show({
+        title: 'ERROR',
+        titleColor: '#FF0000',
+        color: '#FFF',
+        class: 'text-danger',
+        position: 'topRight',
+        message: 'Complete todos los campos requeridos'
+      });
+    }
+  }
+
+  eliminar(id: string) {
+    this.load_btn = true;
+
+    this._atributoService.eliminar_atributo_admin(id, this.token).subscribe(
+      response => {
+        iziToast.show({
+          title: 'SUCCESS',
+          titleColor: '#1DC74C',
+          color: '#FFF',
+          class: 'text-success',
+          position: 'topRight',
+          message: 'Se eliminó correctamente el atributo.'
+        });
+
+        $('#delete-' + id).modal('hide');
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+
+        this.load_btn = false;
+        this.init_data();
+      },
+      error => {
+        console.log(error);
+        this.load_btn = false;
+      }
+    );
+  }
+
+  abrir_modal_editar(item: any) {
+    this.atributo_editar = { ...item }; // Clonar el objeto para no modificar el original
+    $('#modal-editar-' + item._id).modal('show');
+  }
+
+  actualizar(id: string) {
+    if (this.atributo_editar.tipo && this.atributo_editar.valor) {
+      this.load_btn = true;
+
+      this._atributoService.actualizar_atributo_admin(id, this.atributo_editar, this.token).subscribe(
+        response => {
+          if (response.data) {
+            iziToast.show({
+              title: 'SUCCESS',
+              titleColor: '#1DC74C',
+              color: '#FFF',
+              class: 'text-success',
+              position: 'topRight',
+              message: 'Se actualizó correctamente el atributo.'
+            });
+
+            $('#modal-editar-' + id).modal('hide');
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+
+            this.load_btn = false;
+            this.init_data();
+          } else {
+            iziToast.show({
+              title: 'ERROR',
+              titleColor: '#FF0000',
+              color: '#FFF',
+              class: 'text-danger',
+              position: 'topRight',
+              message: response.message || 'Error al actualizar el atributo'
+            });
+            this.load_btn = false;
+          }
+        },
+        error => {
+          console.log(error);
+          iziToast.show({
+            title: 'ERROR',
+            titleColor: '#FF0000',
+            color: '#FFF',
+            class: 'text-danger',
+            position: 'topRight',
+            message: 'Ocurrió un error en el servidor'
+          });
+          this.load_btn = false;
+        }
+      );
+    } else {
+      iziToast.show({
+        title: 'ERROR',
+        titleColor: '#FF0000',
+        color: '#FFF',
+        class: 'text-danger',
+        position: 'topRight',
+        message: 'Complete todos los campos requeridos'
+      });
+    }
+  }
+
+  cambiar_estado(item: any) {
+    this.load_btn = true;
+    const nuevoEstado = !item.activo;
+
+    this._atributoService.actualizar_atributo_admin(item._id, { activo: nuevoEstado }, this.token).subscribe(
+      response => {
+        if (response.data) {
+          iziToast.show({
+            title: 'SUCCESS',
+            titleColor: '#1DC74C',
+            color: '#FFF',
+            class: 'text-success',
+            position: 'topRight',
+            message: `Atributo ${nuevoEstado ? 'activado' : 'desactivado'} correctamente.`
+          });
+
+          this.load_btn = false;
+          this.init_data();
+        } else {
+          iziToast.show({
+            title: 'ERROR',
+            titleColor: '#FF0000',
+            color: '#FFF',
+            class: 'text-danger',
+            position: 'topRight',
+            message: response.message || 'Error al cambiar el estado'
+          });
+          this.load_btn = false;
+        }
+      },
+      error => {
+        console.log(error);
+        iziToast.show({
+          title: 'ERROR',
+          titleColor: '#FF0000',
+          color: '#FFF',
+          class: 'text-danger',
+          position: 'topRight',
+          message: 'Ocurrió un error en el servidor'
+        });
+        this.load_btn = false;
+      }
+    );
+  }
+
+  get_tipo_label(tipo: string): string {
+    const tipoObj = this.tipos_atributos.find(t => t.value === tipo);
+    return tipoObj ? tipoObj.label : tipo;
+  }
+
+  agrupar_por_tipo() {
+    const agrupados: any = {};
+    this.atributos.forEach(atributo => {
+      if (!agrupados[atributo.tipo]) {
+        agrupados[atributo.tipo] = [];
+      }
+      agrupados[atributo.tipo].push(atributo);
+    });
+    return Object.keys(agrupados).map(tipo => ({
+      tipo: tipo,
+      label: this.get_tipo_label(tipo),
+      items: agrupados[tipo]
+    }));
+  }
+}

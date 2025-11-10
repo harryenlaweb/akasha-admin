@@ -1,0 +1,97 @@
+<app-sidebar></app-sidebar>
+
+<div class="border-bottom pt-5 mt-2 mb-5">
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Banners</h1>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+      <p class="text-muted">Este módulo lista todos los banners de la tienda.</p>
+      
+    </div>
+  </div>
+
+<form #registroForm="ngForm" (ngSubmit)="registro(registroForm)">
+    <div class="card box-shadow-sm">
+        <div class="card-header">
+            <h5 style="margin-bottom: 0px;">Registro de banner</h5>
+        </div>
+        <div class="card-body">
+              <div class="row">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6 form-group">	
+                            <label for="">Titulo de banner</label>
+                            <input type="text" class="form-control" placeholder="Titulo de banner" required name="titulo" [(ngModel)]="banner.titulo">
+                        </div>
+                        <div class="col-lg-6 form-group">	
+                          <label for="">Tipo</label>
+                          <select class="form-control" required name="tipo" [(ngModel)]="banner.tipo">
+                            <option value="">Seleccionar tipo</option>
+                            <option value="BANNER">BANNER</option>
+                            <option value="IMAGEN1A">IMAGEN 1A</option>
+                            <option value="IMAGEN1B">IMAGEN 1B</option>
+                            <option value="IMAGEN2">IMAGEN 2</option>
+                          </select>
+                        </div>
+                        <div class="col-lg-6 form-group" *ngIf="banner.tipo === 'BANNER'">	
+                          <label for="">Posicion</label>
+                          <input type="number" class="form-control" placeholder="Posicion del banner" [required]="banner.tipo === 'BANNER'" name="posicion" [(ngModel)]="banner.posicion">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="row">
+                    <div class="col-lg-12 form-group">	
+                        <label for="">Banner</label>
+                        <div class="custom-file">
+                          <input class="custom-file-input" type="file" id="file-input" (change)="fileChangeEvent($event)" accept="image/*">
+                          <label class="custom-file-label" id="input-portada" for="file-input" style="white-space: nowrap;overflow: hidden;">{{ getBannerResolutionText() }}</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <img [src]="imgSelect" class="img-thumbnail" alt="Rounded image">
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="card-footer">
+            <button *ngIf="!load_btn" class="btn btn-primary mr-3" type="submit">Crear banner</button>
+            <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                Creando...
+            </button>
+            <a class="btn btn-warning" [routerLink]="['/panel/banners']">Regresar</a>
+        </div>
+    </div> 
+</form>
+
+<!-- Modal para recortar banner -->
+<div class="modal fade" [class.show]="showCropper" [style.display]="showCropper ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ getBannerCropperTitle() }}</h5>
+        <button type="button" class="close" (click)="cancelCrop()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="getBannerAspectRatio()"
+          [resizeToWidth]="getBannerDimensions().width"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelCrop()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmCrop()">Confirmar Recorte</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showCropper" *ngIf="showCropper"></div>

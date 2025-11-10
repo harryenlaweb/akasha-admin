@@ -1,0 +1,217 @@
+<app-sidebar></app-sidebar>
+
+<!-- Page title-->
+<div class="border-bottom pt-5 mt-2 mb-5">
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Banners</h1>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+      <p class="text-muted">Este módulo lista todos los banners de la tienda.</p>
+      <p class="font-size-sm font-weight-medium pl-md-4">
+          <a class="text-nowrap" [routerLink]="['/panel/banners/registro']">Registrar nuevo<i class="cxi-angle-right font-size-base align-middle ml-1"></i></a></p>
+    </div>
+  </div>
+
+  <!-- TABLA DE BANNERS SLIDER -->
+  <div class="card box-shadow-sm mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5 style="margin-bottom: 0px;"><i class="cxi-view-carousel mr-2"></i>Banners del Slider Principal</h5>
+            <small class="text-white-50">Banners rotativos de la página principal (1920 x 650 px)</small>
+        </div>   
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class="thead-dark">
+                    <tr>                      
+                      <th>Título</th>
+                      <th>Tipo</th>
+                      <th>Posición</th>                      
+                      <th>OP</th>
+                    </tr>
+                  </thead>
+
+                  <tbody *ngIf="load_data">
+                    <tr>
+                      <td class="text-center" colspan="4">
+                        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <ng-container *ngIf="!load_data">
+                      <ng-container *ngIf="banners_slider.length == 0" >
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                <span class="text-muted">No se encontraron banners de slider</span>
+                            </td>
+                        </tr>
+                      </ng-container >
+                      <ng-container *ngIf="banners_slider.length >= 1">
+                        <tbody *ngFor="let item of banners_slider| slice: (page-1)*pageSize : (page-1) * pageSize + pageSize">                       
+                            <tr>
+                                <td>
+                                    <h6 style="padding-bottom: 0;margin-bottom: 0;">
+                                        <img style="width: 50px;" [src]="url+'obtener_banner_banner/'+item.banner" class="img-thumbnail rounded-0" alt="Square image">
+                                        {{item.titulo}}
+    
+                                    </h6>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">
+                                        {{item.tipo}}
+                                    </span>
+                                </td>
+                                <td>{{item.posicion}}</td>                                
+                                <td>
+                                    <div class="btn-group dropdown d-inline-block mb-3 me-2">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">OPCIONES</button>
+                                        <div class="dropdown-menu">
+                                          <a class="dropdown-item" [routerLink]="['/panel/banners',item._id]" >Editar banner</a>
+                                          <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id" >Eliminar banner</a>
+                                          
+                                        </div>
+                                    </div>
+    
+                                    <!--VENTANA MODAL DE CONFIRMACION PARA ELIMINAR-->
+                                    <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h4 class="modal-title">Confirmación de eliminación  </h4>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <p class="fs-sm">{{item.titulo}} desea eliminar este banner?</p>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                            <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Si, eliminar</button>
+                                            <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                                              <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                                              Eliminando...
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                      </ng-container>
+                    
+                  </ng-container>
+                  
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <ngb-pagination
+              [(page)]="page"
+              [pageSize]="pageSize"
+              [collectionSize]="banners_slider.length"
+            ></ngb-pagination>
+
+        </div>
+  </div>
+
+  <!-- TABLA DE IMÁGENES ESPECIALES -->
+  <div class="card box-shadow-sm mt-4 mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 style="margin-bottom: 0px;"><i class="cxi-image mr-2"></i>Imágenes de Secciones Especiales</h5>
+            <small class="text-white-50">Solo puede existir una imagen de cada tipo (IMAGEN1A, IMAGEN1B, IMAGEN2)</small>
+        </div>   
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class="thead-dark">
+                    <tr>                      
+                      <th>Título</th>
+                      <th>Tipo</th>
+                      <th>Resolución</th>                      
+                      <th>OP</th>
+                    </tr>
+                  </thead>
+
+                  <tbody *ngIf="load_data">
+                    <tr>
+                      <td class="text-center" colspan="4">
+                        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <ng-container *ngIf="!load_data">
+                      <ng-container *ngIf="banners_imagenes.length == 0" >
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                <span class="text-muted">No se encontraron imágenes especiales. Puedes crear hasta 3 (una de cada tipo).</span>
+                            </td>
+                        </tr>
+                      </ng-container >
+                      <ng-container *ngIf="banners_imagenes.length >= 1">
+                        <tbody *ngFor="let item of banners_imagenes">                       
+                            <tr>
+                                <td>
+                                    <h6 style="padding-bottom: 0;margin-bottom: 0;">
+                                        <img style="width: 80px;" [src]="url+'obtener_banner_banner/'+item.banner" class="img-thumbnail rounded-0" alt="Square image">
+                                        {{item.titulo}}
+    
+                                    </h6>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          [ngClass]="{
+                                            'badge-info': item.tipo === 'IMAGEN1A',
+                                            'badge-success': item.tipo === 'IMAGEN1B',
+                                            'badge-warning': item.tipo === 'IMAGEN2'
+                                          }">
+                                        {{item.tipo}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="item.tipo === 'IMAGEN1A' || item.tipo === 'IMAGEN1B'">1350 x 680 px</span>
+                                    <span *ngIf="item.tipo === 'IMAGEN2'">1920 x 606 px</span>
+                                </td>                                
+                                <td>
+                                    <div class="btn-group dropdown d-inline-block mb-3 me-2">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">OPCIONES</button>
+                                        <div class="dropdown-menu">
+                                          <a class="dropdown-item" [routerLink]="['/panel/banners',item._id]" >Editar imagen</a>
+                                          <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-img-'+item._id" >Eliminar imagen</a>
+                                          
+                                        </div>
+                                    </div>
+    
+                                    <!--VENTANA MODAL DE CONFIRMACION PARA ELIMINAR-->
+                                    <div class="modal fade" id="delete-img-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h4 class="modal-title">Confirmación de eliminación  </h4>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <p class="fs-sm">¿Desea eliminar la imagen {{item.tipo}}: {{item.titulo}}?</p>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                            <button *ngIf="!load_btn" class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Si, eliminar</button>
+                                            <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
+                                              <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                                              Eliminando...
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                      </ng-container>
+                    
+                  </ng-container>
+                  
+                </table>
+            </div>
+        </div>
+  </div>    
