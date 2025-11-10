@@ -16,6 +16,8 @@ export class UpdateProductoComponent implements OnInit {
 
   public producto : any = {
     descuento:0,
+    colores: [],
+    talles: []
   };
   public file : File = undefined;
   public config : any = {};
@@ -25,6 +27,11 @@ export class UpdateProductoComponent implements OnInit {
   public token;
   public url;  
   public config_global : any = {};
+  public subcategorias_filtradas : any[] = [];
+  
+  // Variables temporales para los selects
+  public color_seleccionado: string = '';
+  public talle_seleccionado: string = '';
 
   constructor(
     private _route : ActivatedRoute,
@@ -60,6 +67,28 @@ export class UpdateProductoComponent implements OnInit {
               this.producto = undefined;
             }else{
               this.producto = response.data;
+              
+              // Asegurar que colores y talles sean arrays
+              if (!this.producto.colores || !Array.isArray(this.producto.colores)) {
+                this.producto.colores = [];
+              }
+              if (!this.producto.talles || !Array.isArray(this.producto.talles)) {
+                this.producto.talles = [];
+              }
+              
+              // Asegurar que oferta y destacado tengan valores
+              if (this.producto.oferta === undefined) {
+                this.producto.oferta = false;
+              }
+              if (this.producto.destacado === undefined) {
+                this.producto.destacado = false;
+              }
+              
+              // Filtrar subcategorías basadas en la categoría principal cargada
+              if (this.producto.categoria_principal) {
+                this.onCategoriaPrincipalChange();
+              }
+              
               this.imgSelect = this.url +'obtener_portada/'+ this.producto.portada;
             }
             
@@ -72,6 +101,70 @@ export class UpdateProductoComponent implements OnInit {
         
       }
     )
+  }
+
+  // Función para filtrar subcategorías según categoría principal seleccionada
+  onCategoriaPrincipalChange() {
+    // Guardar subcategoría actual antes de resetear
+    const subcategoriaActual = this.producto.subcategoria;
+    
+    this.subcategorias_filtradas = [];
+    
+    if (this.producto.categoria_principal && this.config_global.categorias_principales) {
+      // Buscar la categoría principal seleccionada
+      const categoriaSeleccionada = this.config_global.categorias_principales.find(
+        cat => cat.titulo === this.producto.categoria_principal
+      );
+      
+      // Si existe y tiene subcategorías, asignarlas
+      if (categoriaSeleccionada && categoriaSeleccionada.subcategorias) {
+        this.subcategorias_filtradas = categoriaSeleccionada.subcategorias;
+        
+        // Verificar si la subcategoría actual existe en las subcategorías filtradas
+        const subcategoriaExiste = this.subcategorias_filtradas.some(
+          sub => sub.titulo === subcategoriaActual
+        );
+        
+        // Solo resetear si la subcategoría no existe en la nueva lista
+        if (!subcategoriaExiste) {
+          this.producto.subcategoria = '';
+        }
+      } else {
+        // No hay subcategorías disponibles, resetear
+        this.producto.subcategoria = '';
+      }
+    } else {
+      // No hay categoría principal, resetear
+      this.producto.subcategoria = '';
+    }
+  }
+
+  // ============ FUNCIONES PARA COLORES ============
+  agregarColor() {
+    if (this.color_seleccionado && this.color_seleccionado.trim() !== '') {
+      if (!this.producto.colores.includes(this.color_seleccionado)) {
+        this.producto.colores.push(this.color_seleccionado);
+      }
+      this.color_seleccionado = '';
+    }
+  }
+
+  eliminarColor(index: number) {
+    this.producto.colores.splice(index, 1);
+  }
+
+  // ============ FUNCIONES PARA TALLES ============
+  agregarTalle() {
+    if (this.talle_seleccionado && this.talle_seleccionado.trim() !== '') {
+      if (!this.producto.talles.includes(this.talle_seleccionado)) {
+        this.producto.talles.push(this.talle_seleccionado);
+      }
+      this.talle_seleccionado = '';
+    }
+  }
+
+  eliminarTalle(index: number) {
+    this.producto.talles.splice(index, 1);
   }
 
 
@@ -97,11 +190,14 @@ export class UpdateProductoComponent implements OnInit {
       // Agregar nuevos campos de atributos
       data.categoria_principal = this.producto.categoria_principal;
       data.subcategoria = this.producto.subcategoria;
-      data.color = this.producto.color;
-      data.talle = this.producto.talle;
+      data.colores = this.producto.colores;
+      data.talles = this.producto.talles;
       data.marca = this.producto.marca;
-      data.genero = this.producto.genero;
       data.temporada = this.producto.temporada;
+      
+      // Agregar campos de visualización
+      data.oferta = this.producto.oferta || false;
+      data.destacado = this.producto.destacado || false;
 
       console.log(data);
       

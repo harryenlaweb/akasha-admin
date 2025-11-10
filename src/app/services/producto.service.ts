@@ -39,6 +39,10 @@ export class ProductoService {
     // Arrays: colores y talles (enviar como JSON string)
     fd.append('colores', JSON.stringify(data.colores || []));
     fd.append('talles', JSON.stringify(data.talles || []));
+    
+    // Campos de visualización
+    fd.append('oferta', data.oferta ? 'true' : 'false');
+    fd.append('destacado', data.destacado ? 'true' : 'false');
 
     return this._http.post(this.url+'registro_producto_admin/',fd,{headers:headers});
 
@@ -80,7 +84,19 @@ export class ProductoService {
       fd.append('descripcion',data.descripcion);
       fd.append('contenido',data.contenido);
       fd.append('categoria',data.categoria);
-      fd.append('portada',data.portada);    
+      fd.append('portada',data.portada);
+      
+      // Nuevos campos de atributos
+      fd.append('categoria_principal', data.categoria_principal || '');
+      fd.append('subcategoria', data.subcategoria || '');
+      fd.append('marca', data.marca || '');
+      fd.append('temporada', data.temporada || '');
+      fd.append('colores', JSON.stringify(data.colores || []));
+      fd.append('talles', JSON.stringify(data.talles || []));
+      
+      // Campos de visualización
+      fd.append('oferta', data.oferta ? 'true' : 'false');
+      fd.append('destacado', data.destacado ? 'true' : 'false');
 
       return this._http.put(this.url+'actualizar_producto_admin/'+id,fd,{headers:headers});
     }else{

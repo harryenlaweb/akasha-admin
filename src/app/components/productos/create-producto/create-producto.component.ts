@@ -26,7 +26,9 @@ export class CreateProductoComponent implements OnInit {
     colores: [],  // Array para colores seleccionados
     talles: [],   // Array para talles seleccionados
     marca: '',
-    temporada: ''
+    temporada: '',
+    oferta: false,     // Por defecto desactivado
+    destacado: false   // Por defecto desactivado
   };
   public file : File = undefined;
   public imgSelect : any | ArrayBuffer = 'assets/img/01.jpg';
