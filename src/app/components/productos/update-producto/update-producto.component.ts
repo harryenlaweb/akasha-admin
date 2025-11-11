@@ -44,63 +44,63 @@ export class UpdateProductoComponent implements OnInit {
     }
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
-
-    this._adminService.obtener_config_publico().subscribe(
-      response=>{        
-        this.config_global = response.data;
-        console.log(this.config_global);
-        
-      }
-    )
-    
    }
 
   ngOnInit(): void {
     
-    this._route.params.subscribe(
-      params=>{
-        this.id = params['id'];
-        console.log(this.id);
-        this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
-          response=>{
-            if(response == undefined){
-              this.producto = undefined;
-            }else{
-              this.producto = response.data;
-              
-              // Asegurar que colores y talles sean arrays
-              if (!this.producto.colores || !Array.isArray(this.producto.colores)) {
-                this.producto.colores = [];
+    // Primero cargar la configuración global
+    this._adminService.obtener_config_publico().subscribe(
+      response=>{        
+        this.config_global = response.data;
+        console.log('Config global cargado:', this.config_global);
+        
+        // Después cargar el producto
+        this._route.params.subscribe(
+          params=>{
+            this.id = params['id'];
+            console.log(this.id);
+            
+            this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
+              response=>{
+                if(response == undefined){
+                  this.producto = undefined;
+                }else{
+                  this.producto = response.data;
+                  
+                  // Asegurar que colores y talles sean arrays
+                  if (!this.producto.colores || !Array.isArray(this.producto.colores)) {
+                    this.producto.colores = [];
+                  }
+                  if (!this.producto.talles || !Array.isArray(this.producto.talles)) {
+                    this.producto.talles = [];
+                  }
+                  
+                  // Asegurar que oferta y destacado tengan valores
+                  if (this.producto.oferta === undefined) {
+                    this.producto.oferta = false;
+                  }
+                  if (this.producto.destacado === undefined) {
+                    this.producto.destacado = false;
+                  }
+                  
+                  // Ahora filtrar subcategorías (config_global ya está cargado)
+                  if (this.producto.categoria_principal) {
+                    this.onCategoriaPrincipalChange();
+                  }
+                  
+                  this.imgSelect = this.url +'obtener_portada/'+ this.producto.portada;
+                }
+                
+              },
+              error=>{
+                console.log(error);
               }
-              if (!this.producto.talles || !Array.isArray(this.producto.talles)) {
-                this.producto.talles = [];
-              }
-              
-              // Asegurar que oferta y destacado tengan valores
-              if (this.producto.oferta === undefined) {
-                this.producto.oferta = false;
-              }
-              if (this.producto.destacado === undefined) {
-                this.producto.destacado = false;
-              }
-              
-              // Filtrar subcategorías basadas en la categoría principal cargada
-              if (this.producto.categoria_principal) {
-                this.onCategoriaPrincipalChange();
-              }
-              
-              this.imgSelect = this.url +'obtener_portada/'+ this.producto.portada;
-            }
+            );
             
           }
-        ),
-        error=>{
-          console.log(error);
-          
-        }
-        
+        );
       }
-    )
+    );
   }
 
   // Función para filtrar subcategorías según categoría principal seleccionada

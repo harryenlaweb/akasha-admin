@@ -1,16 +1,17 @@
 <app-sidebar></app-sidebar>
 
-<!-- Page title-->
-<div class="border-bottom pt-5 mt-2 mb-5">
-    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Productos</h1>
-    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
-      <p class="text-muted">Este módulo lista todos los productos de la tienda.</p>
-      <p class="font-size-sm font-weight-medium pl-md-4">
-          <a class="text-nowrap" [routerLink]="['/panel/productos/registro']">Registrar nuevo<i class="cxi-angle-right font-size-base align-middle ml-1"></i></a></p>
+<div class="container-fluid">
+  <!-- Page title-->
+  <div class="border-bottom pt-5 mt-2 mb-5">
+      <h1 class="mt-2 mt-md-4 mb-3 pt-5">Productos</h1>
+      <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+        <p class="text-muted">Este módulo lista todos los productos de la tienda.</p>
+        <p class="font-size-sm font-weight-medium pl-md-4">
+            <a class="text-nowrap" [routerLink]="['/panel/productos/registro']">Registrar nuevo<i class="cxi-angle-right font-size-base align-middle ml-1"></i></a></p>
+      </div>
     </div>
-  </div>
 
-  <div class="card box-shadow-sm">
+    <div class="card box-shadow-sm">
         <div class="card-header">
             <h5 style="margin-bottom: 0px;">Filtro de productos</h5>
         </div>
@@ -42,13 +43,13 @@
             <div class="table-responsive">
                 <table class="table table-bordered">
                   <thead class="thead-dark">
-                    <tr>                      
+                    <tr>
                       <th>Título</th>
                       <th>Codigo</th>
                       <th>Stock</th>
                       <th>Precio</th>
-                      <th>Categoria</th> 
-                      <th>Descuento</th>                     
+                      <th>Categoría Principal</th>
+                      <th>Subcategoría</th>
                       <th>OP</th>
                     </tr>
                   </thead>
@@ -75,8 +76,8 @@
                             <td>{{item.codigo}}</td>
                             <td>{{item.stock}}</td>
                             <td>${{(item.precio - item.precio*item.descuento/100).toFixed(2)}}</td>
-                            <td>{{item.categoria}}</td>
-                            <td>{{item.descuento}} %</td>                            
+                            <td>{{item.categoria_principal || item.categoria}}</td>
+                            <td>{{item.subcategoria}}</td>
                             <td>
                                 <div class="btn-group dropdown d-inline-block mb-3 me-2">
                                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">OPCIONES</button>
@@ -129,4 +130,5 @@
             ></ngb-pagination>
 
         </div>
-  </div>    
+  </div>
+</div>

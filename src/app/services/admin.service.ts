@@ -70,6 +70,23 @@ export class AdminService {
       fd.append('contacto',JSON.stringify(data.contacto));
     }
     
+    // Atributos de moda
+    if(data.categorias_principales){
+      fd.append('categorias_principales',JSON.stringify(data.categorias_principales));
+    }
+    if(data.colores){
+      fd.append('colores',JSON.stringify(data.colores));
+    }
+    if(data.talles){
+      fd.append('talles',JSON.stringify(data.talles));
+    }
+    if(data.marcas){
+      fd.append('marcas',JSON.stringify(data.marcas));
+    }
+    if(data.temporadas){
+      fd.append('temporadas',JSON.stringify(data.temporadas));
+    }
+    
     if(data.logo_dark){
       fd.append('logo_dark',data.logo_dark);
     }
