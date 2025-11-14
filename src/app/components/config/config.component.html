@@ -113,6 +113,44 @@
                 <input class="form-control" type="text" name="horario" [(ngModel)]="config.contacto.horario" placeholder="Ej: Lunes a Viernes: 9:00 - 18:00">
               </div>
             </div>
+
+            <hr class="my-4">
+            <h5 class="mb-3">
+              <img src="https://http2.mlstatic.com/storage/logos-api-admin/51b446b0-571c-11e8-9a2d-4b2bd7b1bf77-m.svg" 
+                   alt="Mercado Pago" 
+                   style="height: 24px; margin-right: 8px;">
+              Configuración de Mercado Pago
+            </h5>
+            <p class="text-muted mb-3">
+              Configura tus credenciales de Mercado Pago para recibir pagos en tu tienda. 
+              <a href="https://www.mercadopago.com.ar/developers/panel/credentials" target="_blank" rel="noopener">
+                Obtener credenciales aquí
+              </a>
+            </p>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Public Key</label>
+              <div class="col-md-9">
+                <input class="form-control" 
+                       type="text" 
+                       name="mp_public_key" 
+                       [(ngModel)]="config.mercadopago.public_key" 
+                       placeholder="APP_USR-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                <small class="form-text text-muted">Clave pública de Mercado Pago (comienza con APP_USR o TEST-)</small>
+              </div>
+            </div>
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium">Access Token</label>
+              <div class="col-md-9">
+                <input class="form-control" 
+                       type="password" 
+                       name="mp_access_token" 
+                       [(ngModel)]="config.mercadopago.access_token" 
+                       placeholder="APP_USR-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <small class="form-text text-muted">Token de acceso privado (se guardará encriptado)</small>
+              </div>
+            </div>
           </div>
          
         </div>

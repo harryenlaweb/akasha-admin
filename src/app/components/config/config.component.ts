@@ -63,6 +63,14 @@ export class ConfigComponent implements OnInit {
             };
           }
           
+          // Inicializar mercadopago si no existe
+          if(!this.config.mercadopago) {
+            this.config.mercadopago = {
+              public_key: '',
+              access_token: ''
+            };
+          }
+          
           if(this.config.logo_dark) {
             this.imgSelect_dark = this.url+'obtener_logo_dark/'+this.config.logo_dark;
           }
@@ -105,7 +113,8 @@ export class ConfigComponent implements OnInit {
         email: this.config.email,       
         logo_dark: this.file_dark,
         logo_light: this.file_light,
-        contacto: this.config.contacto
+        contacto: this.config.contacto,
+        mercadopago: this.config.mercadopago
       }     
       console.log(data);
       
