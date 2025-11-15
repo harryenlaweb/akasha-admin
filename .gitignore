@@ -231,7 +231,7 @@ Desktop.ini
 # Compressed files
 *.zip
 *.rar
-*.7z
+*.7zF
 
 # Testing
 /coverage
