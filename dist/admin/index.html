@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <title>Admin</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Favicon and Touch Icons-->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16x16.png">
+  <link rel="manifest" href="assets/img/site.webmanifest">
+  <link rel="mask-icon" color="#5bbad5" href="assets/img/safari-pinned-tab.svg">
+  <meta name="msapplication-TileColor" content="#766df4">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Vendor Styles-->
+  <link rel="stylesheet" media="print" href="assets/vendor/simplebar/dist/simplebar.min.css" onload="this.media='screen'"><noscript><link rel="stylesheet" href="assets/vendor/simplebar/dist/simplebar.min.css" media="screen"></noscript>
+
+  <!-- Main Theme Styles + Bootstrap-->
+  <style>@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap");:root{--blue:#007bff;--indigo:#6610f2;--purple:#6f42c1;--pink:#e83e8c;--red:#dc3545;--orange:#fd7e14;--yellow:#ffc107;--green:#28a745;--teal:#20c997;--cyan:#17a2b8;--white:#fff;--gray:#9a9ca5;--gray-dark:#424551;--primary:#007bff;--secondary:#e5e8ed;--success:#03cea4;--info:#5a87fc;--warning:#f89828;--danger:#ff4242;--light:#fff;--dark:#424551;--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1280px;--font-family-sans-serif:"Lato", sans-serif;--font-family-monospace:SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}*,*::before,*::after{box-sizing:border-box}html{font-family:sans-serif;line-height:1.15;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}main,section{display:block}body{margin:0;font-family:"Lato",sans-serif;font-size:1rem;font-weight:400;line-height:1.5;color:#424551;text-align:left;background-color:#fff}a{color:#007bff;text-decoration:underline;background-color:transparent}a:hover{color:#0062cc;text-decoration:none}.container-fluid{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}.row{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-15px;margin-left:-15px}.col-xl-9{position:relative;width:100%;padding-right:15px;padding-left:15px}@media (min-width: 1280px){.col-xl-9{-ms-flex:0 0 75%;flex:0 0 75%;max-width:75%}}.mr-2{margin-right:.5rem !important}.pb-3{padding-bottom:1rem !important}@media (min-width: 576px){.pb-sm-4{padding-bottom:1.5rem !important}}@media (min-width: 768px){.pb-md-4{padding-bottom:1.5rem !important}}.text-muted{color:#787a80 !important}html *{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}html,body{height:100%}body{display:-ms-flexbox;display:flex;-ms-flex-direction:column;flex-direction:column}@media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none){html,body{height:auto}body{display:block}}a{transition:color 0.2s ease-in-out}a:focus{outline:none}@font-face{font-family:"createx-icons";src:url("../fonts/createx-icons.ttf?h4y910") format("truetype"),url("../fonts/createx-icons.woff?h4y910") format("woff"),url("../fonts/createx-icons.svg?h4y910#createx-icons") format("svg");font-weight:normal;font-style:normal;font-display:block}[class*=' cxi-']{display:inline-block;font-family:"createx-icons" !important;font-style:normal;font-weight:normal;font-variant:normal;speak:never;text-transform:none;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.cxi-angle-up:before{content:'\e919'}.btn-scroll-top{display:block;position:fixed;right:1.25rem;bottom:1.25rem;width:2.625rem;height:2.625rem;transition:opacity 0.25s,background-color 0.25s ease-in-out,-webkit-transform 0.25s ease-in-out;transition:transform 0.25s ease-in-out,opacity 0.25s,background-color 0.25s ease-in-out;transition:transform 0.25s ease-in-out,opacity 0.25s,background-color 0.25s ease-in-out,-webkit-transform 0.25s ease-in-out;-webkit-transform:scale(0);transform:scale(0);border-radius:50%;background-color:#007bff;color:#fff;text-align:center;opacity:0;z-index:1025}.btn-scroll-top>.btn-scroll-top-icon{font-size:1.5rem;font-weight:regular;line-height:2.5rem}@media (max-width: 1200px){.btn-scroll-top>.btn-scroll-top-icon{font-size:calc(1.275rem + .3vw)}}.btn-scroll-top .btn-scroll-top-tooltip{position:absolute;top:50%;right:100%;-webkit-transform:translateY(-50%);transform:translateY(-50%);transition:opacity .25s ease-in-out, visibility .25s ease-in-out;visibility:hidden;opacity:0}.btn-scroll-top:hover{text-decoration:none;background-color:#006adb;color:#fff}.btn-scroll-top:hover .btn-scroll-top-tooltip{visibility:visible;opacity:1}@media (max-width: 767.98px){.btn-scroll-top{width:1.96875rem;height:1.96875rem;right:1rem;bottom:1rem}.btn-scroll-top>.btn-scroll-top-icon{line-height:1.96875rem}}@media (min-width: 992px){.cs-offcanvas-enabled{padding-left:24rem}}.font-size-sm{font-size:.875rem !important}</style><link rel="stylesheet" media="print" href="assets/css/theme.min.css" onload="this.media='screen'"><noscript><link rel="stylesheet" href="assets/css/theme.min.css" media="screen"></noscript>
+  <link rel="stylesheet" href="assets/css/iziToast.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="assets/css/iziToast.min.css"></noscript>
+
+ 
+<link rel="stylesheet" href="styles.31d6cfe0d16ae931b73c.css"></head>
+<body>
+
+  <main class="container-fluid pb-3 pb-sm-4">
+    <section class="cs-offcanvas-enabled row pb-3 pb-md-4">
+      <div class="col-xl-9">
+        <div id="avepdf-container-id">
+  
+        </div>
+        <app-root></app-root>
+        
+      </div>
+    </section>
+  </main>
+  
+
+    <!-- Back to top button-->
+    <a class="btn-scroll-top" href="#top" data-scroll="" data-fixed-element="">
+      <span class="btn-scroll-top-tooltip text-muted font-size-sm mr-2">Top</span>
+      <i class="btn-scroll-top-icon cxi-angle-up"></i>
+    </a>
+
+    <!-- Vendor scripts: js libraries and plugins-->
+    <script src="assets/vendor/jquery/dist/jquery.slim.min.js"></script>
+    <script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/simplebar/dist/simplebar.min.js"></script>
+    <script src="assets/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+
+    <!-- Main theme script-->
+    <script src="assets/js/theme.min.js"></script>
+    <script src="assets/js/iziToast.min.js"></script>
+    
+<script src="runtime-es2017.2cee608c3472ca289739.js" type="module"></script><script src="runtime-es5.2cee608c3472ca289739.js" nomodule defer></script><script src="polyfills-es5.09c2184b3e68b2b48858.js" nomodule defer></script><script src="polyfills-es2017.d7326c51ee59e754ac5e.js" type="module"></script><script src="main-es2017.181b42249dbeca82df4d.js" type="module"></script><script src="main-es5.181b42249dbeca82df4d.js" nomodule defer></script>
+
+</body></html>

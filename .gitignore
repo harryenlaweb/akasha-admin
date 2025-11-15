@@ -110,7 +110,6 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -118,8 +117,6 @@ dist
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
 
-# vuepress build output
-.vuepress/dist
 
 # Serverless directories
 .serverless/
@@ -141,7 +138,6 @@ Thumbs.db
 # See https://github.com/angular/angular/blob/master/.gitignore
 
 # compiled output
-/dist
 /tmp
 /out-tsc
 
@@ -260,7 +256,6 @@ docker-compose*
 mail*.html
 
 # Build artifacts
-dist.rar
 y/
 
 # Database dumps
