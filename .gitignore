@@ -233,12 +233,6 @@ Desktop.ini
 *.rar
 *.7z
 
-# Docker
-.dockerignore
-Dockerfile*
-docker-compose*
-.docker/
-
 # Testing
 /coverage
 *.lcov
