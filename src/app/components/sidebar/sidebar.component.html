@@ -54,6 +54,12 @@
 
       <a class="nav-link px-4" [routerLink]="['/panel/configuraciones']" routerLinkActive="active">Configuraciones</a>
 
+      <!-- Logout en móviles -->
+      <hr class="hr-gradient hr-light my-3 opacity-25 d-lg-none">
+      <a class="nav-link px-4 d-lg-none" (click)="logout()" style="cursor: pointer;">
+        <i class="cxi-profile align-middle mt-n1 mr-2"></i>Cerrar Sesión
+      </a>
+
     </nav>
   </div>
 </aside>
