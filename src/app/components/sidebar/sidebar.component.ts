@@ -5,6 +5,7 @@ import { AdminService } from 'src/app/services/admin.service';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 var moment = require('moment');
 
+declare var $: any;
 
 @Component({
   selector: 'app-sidebar',
@@ -39,6 +40,11 @@ export class SidebarComponent implements OnInit {
     
     // Cargar configuración para obtener el logo
     this.cargarLogo();
+    
+    // Inicializar el offcanvas manualmente
+    setTimeout(() => {
+      this.initOffcanvas();
+    }, 100);
   } 
 
   cargarLogo() {
@@ -61,6 +67,37 @@ export class SidebarComponent implements OnInit {
     localStorage.removeItem('token');
     localStorage.removeItem('_id');
     this._router.navigate(['/login']);
+  }
+
+  initOffcanvas() {
+    // Inicializar offcanvas con jQuery
+    const toggleBtn = document.querySelector('[data-toggle="offcanvas"]');
+    const offcanvas = document.getElementById('componentsNav');
+    const closeBtn = document.querySelector('[data-dismiss="offcanvas"]');
+    
+    if (toggleBtn && offcanvas) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        offcanvas.classList.add('show');
+        document.body.classList.add('offcanvas-enabled');
+      });
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          offcanvas.classList.remove('show');
+          document.body.classList.remove('offcanvas-enabled');
+        });
+      }
+      
+      // Cerrar al hacer click en el backdrop
+      document.addEventListener('click', (e: any) => {
+        if (e.target.classList.contains('offcanvas-enabled')) {
+          offcanvas.classList.remove('show');
+          document.body.classList.remove('offcanvas-enabled');
+        }
+      });
+    }
   }
 
 }
