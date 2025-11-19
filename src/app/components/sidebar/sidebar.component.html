@@ -52,7 +52,7 @@
 
       <a class="nav-link px-4" [routerLink]="['/panel/atributos']" routerLinkActive="active">Atributos</a>
 
-      <a class="nav-link px-4" [routerLink]="['/panel/configuraciones']" routerLinkActive="active">Configuraciones</a>
+      <a class="nav-link px-4" *ngIf="isAdmin()" [routerLink]="['/panel/configuraciones']" routerLinkActive="active">Configuraciones</a>
 
       <!-- Logout en móviles -->
       <hr class="hr-gradient hr-light my-3 opacity-25 d-lg-none">

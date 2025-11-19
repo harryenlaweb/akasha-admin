@@ -27,6 +27,18 @@ export class AdminService {
     return localStorage.getItem('token');
   }
 
+  getIdentity(){
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    try {
+      const helper = new JwtHelperService();
+      return helper.decodeToken(token);
+    } catch (error) {
+      return null;
+    }
+  }
+
   public isAuthenticated(allowRoles : string[]):boolean{
 
     const token = localStorage.getItem('token')||'{}';        

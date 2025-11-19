@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Router } from '@angular/router';
 import { AdminService } from 'src/app/services/admin.service';
 import { ProductoService } from 'src/app/services/producto.service';
@@ -32,6 +33,10 @@ export class CreateProductoComponent implements OnInit {
   };
   public file : File = undefined;
   public imgSelect : any | ArrayBuffer = 'assets/img/01.jpg';
+  // Cropper variables (para recortar portada a 600x700)
+  public imageChangedEvent: any = '';
+  public croppedImage: any = '';
+  public showCropper: boolean = false;
   public config : any = {};
   public token;
   public load_btn = false;   
@@ -210,38 +215,18 @@ export class CreateProductoComponent implements OnInit {
   
 
   async fileChangeEvent(event: any): Promise<void> {
-    try {
-      if (event.target.files && event.target.files[0]) {
-        const file = <File>event.target.files[0];
-
-          if ( file.type === 'image/png' || file.type === 'image/webp' || file.type === 'image/jpg' ||
-            file.type === 'image/gif' || file.type === 'image/jpeg') 
-          {
-            const compressedBlob = await this.compressImage(file, 500, 500, 0.75);
-  
-            // Crear una nueva instancia de File con las propiedades necesarias
-            const compressedFile = new File([compressedBlob], file.name, {
-              type: file.type,
-              lastModified: file.lastModified
-            });
-  
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              this.imgSelect = reader.result as string;
-            };
-            reader.readAsDataURL(compressedFile); // imgSelect contiene una base64
-  
-            $('#input-portada').text(file.name);
-            this.file = compressedFile;
-          } else {
-            this.showErrorMessage('El archivo debe ser una imagen');
-          }
-        
+    // Abrir cropper para que el usuario recorte a 600x700
+    if (event.target.files && event.target.files[0]) {
+      const file = <File>event.target.files[0];
+      if ( file.type === 'image/png' || file.type === 'image/webp' || file.type === 'image/jpg' ||
+            file.type === 'image/gif' || file.type === 'image/jpeg') {
+        this.imageChangedEvent = event;
+        this.showCropper = true;
       } else {
-        this.showErrorMessage('No hay una imagen de envío');
+        this.showErrorMessage('El archivo debe ser una imagen');
       }
-    } catch (error) {
-      console.error('Error al procesar la imagen: ', error);
+    } else {
+      this.showErrorMessage('No hay una imagen de envío');
     }
   }
   
@@ -305,6 +290,65 @@ export class CreateProductoComponent implements OnInit {
         reject(new Error('Error al cargar la imagen.'));
       };
     });
+  }
+
+  // Cropper handlers (similar a create-banner)
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+    this.base64ToFile(event.base64, 'portada.png');
+  }
+
+  imageLoaded() {
+    // Imagen cargada correctamente en cropper
+  }
+
+  cropperReady() {
+    // Cropper listo
+  }
+
+  loadImageFailed() {
+    iziToast.show({
+      title: 'ERROR',
+      titleColor: '#FF0000',
+      color: '#FFF',
+      class: 'text-danger',
+      position: 'topRight',
+      message: 'Error al cargar la imagen',
+    });
+  }
+
+  base64ToFile(base64: string, filename: string) {
+    const arr = base64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    this.file = new File([u8arr], filename, { type: mime });
+    this.imgSelect = base64;
+  }
+
+  cancelCrop() {
+    this.showCropper = false;
+    this.imageChangedEvent = '';
+  }
+
+  confirmCrop() {
+    if (this.croppedImage) {
+      this.imgSelect = this.croppedImage;
+      this.showCropper = false;
+      $('#input-portada').text('Portada recortada');
+      iziToast.show({
+        title: 'SUCCESS',
+        titleColor: '#1DC74C',
+        color: '#FFF',
+        class: 'text-success',
+        position: 'topRight',
+        message: 'Imagen recortada correctamente',
+      });
+    }
   }
   
 

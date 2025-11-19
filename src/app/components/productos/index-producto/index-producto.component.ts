@@ -1,4 +1,5 @@
 import { Component, DEFAULT_CURRENCY_CODE, OnInit } from '@angular/core';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { GLOBAL } from "src/app/services/GLOBAL";
 import { ProductoService } from 'src/app/services/producto.service';
 import { AdminService } from 'src/app/services/admin.service';
@@ -19,6 +20,12 @@ export class IndexProductoComponent implements OnInit {
 
   public file_precios : File = undefined;
   public imgSelect : any | ArrayBuffer = 'assets/img/01.jpg';
+  // Portada cropper vars
+  public file_portada: File = undefined;
+  public imgSelectPortada: any | ArrayBuffer = 'assets/img/01.jpg';
+  public imageChangedEventPortada: any = '';
+  public croppedImagePortada: any = '';
+  public showCropperPortada = false;
 
   public load_data = true;
   public filtro = '';
@@ -233,6 +240,69 @@ export class IndexProductoComponent implements OnInit {
       // });
     }
 
+  }
+
+  // Portada cropper handlers
+  fileChangeEvent_portada(event:any):void{
+    this.imageChangedEventPortada = event;
+    this.showCropperPortada = true;
+  }
+
+  imageCroppedPortada(event: ImageCroppedEvent) {
+    this.croppedImagePortada = event.base64;
+    this.base64ToFilePortada(event.base64, 'portada.png');
+  }
+
+  imageLoadedPortada() {
+    // Imagen cargada correctamente
+  }
+
+  cropperReadyPortada() {
+    // Cropper listo
+  }
+
+  loadImageFailedPortada() {
+    iziToast.show({
+      title: 'ERROR',
+      titleColor: '#FF0000',
+      color: '#FFF',
+      class: 'text-danger',
+      position: 'topRight',
+      message: 'Error al cargar la imagen',
+    });
+  }
+
+  base64ToFilePortada(base64: string, filename: string) {
+    const arr = base64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    this.file_portada = new File([u8arr], filename, { type: mime });
+    this.imgSelectPortada = base64;
+  }
+
+  cancelCropPortada() {
+    this.showCropperPortada = false;
+    this.imageChangedEventPortada = '';
+  }
+
+  confirmCropPortada() {
+    if (this.croppedImagePortada) {
+      this.imgSelectPortada = this.croppedImagePortada;
+      this.showCropperPortada = false;
+      iziToast.show({
+        title: 'SUCCESS',
+        titleColor: '#1DC74C',
+        color: '#FFF',
+        class: 'text-success',
+        position: 'topRight',
+        message: 'Imagen recortada correctamente',
+      });
+    }
   }
   
 

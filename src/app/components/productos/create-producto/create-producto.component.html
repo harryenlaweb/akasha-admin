@@ -194,10 +194,10 @@
                   <div class="row">
                     <div class="col-lg-12 form-group">	
                         <label for="">Portada</label>
-                        <div class="custom-file">
-                          <input class="custom-file-input" type="file" id="file-input" (change)="fileChangeEvent($event)">
-                          <label class="custom-file-label" id="input-portada" for="file-input" style="white-space: nowrap;overflow: hidden;">Seleccionar imagen</label>
-                        </div>
+                            <div class="custom-file">
+                              <input class="custom-file-input" type="file" id="file-input" (change)="fileChangeEvent($event)" accept="image/*">
+                              <label class="custom-file-label" id="input-portada" for="file-input" style="white-space: nowrap;overflow: hidden;">Resolución: 600 x 700 píxeles</label>
+                            </div>
                     </div>
                     <div class="col-lg-12">
                       <img [src]="imgSelect" class="img-thumbnail" alt="Rounded image">
@@ -216,5 +216,37 @@
         </div>
     </div> 
 </form>
+
+<!-- Modal para recortar portada (600x700) -->
+<div class="modal fade" [class.show]="showCropper" [style.display]="showCropper ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Recortar Portada - 600 x 700 px</h5>
+        <button type="button" class="close" (click)="cancelCrop()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="600/700"
+          [resizeToWidth]="600"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelCrop()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmCrop()">Confirmar Recorte</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showCropper" *ngIf="showCropper"></div>
 
    

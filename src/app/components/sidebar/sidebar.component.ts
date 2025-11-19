@@ -69,6 +69,19 @@ export class SidebarComponent implements OnInit {
     this._router.navigate(['/login']);
   }
 
+  isAdmin(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    
+    try {
+      const helper = new JwtHelperService();
+      const decodedToken = helper.decodeToken(token);
+      return decodedToken && decodedToken.role === 'admin';
+    } catch (error) {
+      return false;
+    }
+  }
+
   initOffcanvas() {
     // Inicializar offcanvas con jQuery
     const toggleBtn = document.querySelector('[data-toggle="offcanvas"]');

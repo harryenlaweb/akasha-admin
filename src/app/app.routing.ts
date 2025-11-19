@@ -70,7 +70,7 @@ const appRoute : Routes = [ //aca creamos todas las rutas
 
         {path: 'atributos', component: AtributosComponent, canActivate: [AdminGuard]},
 
-        {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard]},
+        {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard], data: { role: 'admin' }},
         
         {path: 'ventas', component: IndexVentasComponent, canActivate: [AdminGuard]},
         {path: 'ventas/:id', component: DetalleVentasComponent, canActivate: [AdminGuard]},        
