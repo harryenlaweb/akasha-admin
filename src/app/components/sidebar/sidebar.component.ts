@@ -16,7 +16,7 @@ export class SidebarComponent implements OnInit {
 
   public config: any = null;
   public url: string;
-  public logo: string = 'assets/img/components/logo/logo.png'; // Logo por defecto
+  public logo: string = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSIyNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5BZG1pbjwvdGV4dD48L3N2Zz4='; // Logo por defecto (SVG placeholder)
 
   constructor(
     private _router : Router,
