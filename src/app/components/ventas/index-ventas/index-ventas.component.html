@@ -63,7 +63,7 @@
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
                       </div>
                       <div class="modal-body">
-                        <p class="fs-sm">¿Desea eliminar la venta <strong>{{item._id}}</strong> ?</p>
+                        <p class="fs-sm">¿Desea eliminar la venta <strong>{{item.nventa}}</strong> ?</p>
                         
                       </div>
                       <div class="modal-footer">
@@ -84,12 +84,12 @@
                 <div class="col-12">
                     <ul class="nav nav-muted mb-2 pb-1">
                         <li class="nav-item mr-2">
-                          <span class="badge badge-dark MR-3">{{item._id.toUpperCase()}} </span>
+                          <span class="badge badge-dark MR-3">{{item.nventa}} </span>
                           <span class="text-border px-1">|</span>
                         </li>
                         <li class="nav-item mr-2">
-                          <span  class="d-inline-block mr-2 p-0 font-size-sm font-weight-normal">
-                            {{item.createdAt |date}}
+                            <span  class="d-inline-block mr-2 p-0 font-size-sm font-weight-normal">
+                            {{item.createdAt | date:'dd/MM/yyyy HH:mm'}}
                           </span>
                           <span class="text-border px-1">|</span>
                         </li>
