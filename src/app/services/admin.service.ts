@@ -153,6 +153,7 @@ export class AdminService {
       fd.append('imagen_about',data.imagen_about);    
 
       fd.append('historia_about',data.historia_about);
+      fd.append('descripcion_about', data.descripcion_about || '');
       fd.append('mision_about',data.mision_about);
       fd.append('vision_about',data.vision_about);
       fd.append('valores_about',data.valores_about);

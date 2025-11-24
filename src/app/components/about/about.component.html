@@ -13,7 +13,7 @@
 
         <div class="card-body">
           <div style="max-width: 48rem;">
-            <div class="form-group row align-items-center">
+            <!-- <div class="form-group row align-items-center">
               <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Historia</label>
               <div class="col-md-9">
                 <textarea class="form-control" placeholder="Historia" rows="5" name="historia_about" [(ngModel)]="config.historia_about"></textarea>                
@@ -38,6 +38,13 @@
               <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Valores</label>
               <div class="col-md-9">
                 <textarea class="form-control" placeholder="Valores" rows="5" name="valores_about" [(ngModel)]="config.valores_about"></textarea>                
+              </div>
+            </div> -->
+
+            <div class="form-group row align-items-center">
+              <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Descripción</label>
+              <div class="col-md-9">
+                <tinymce [config]="tinymceConfig" name="descripcion_about" [(ngModel)]="config.descripcion_about"></tinymce>
               </div>
             </div>
 

@@ -24,6 +24,15 @@ export class AboutComponent implements OnInit {
   public titulo_cat = '';
   public file:File=undefined;
   public imgSelect : String | ArrayBuffer = 'assets/img/01.jpg';
+  public tinymceConfig: any = {
+    base_url: '/assets/tinymce', // base path set in AppModule.forRoot
+    suffix: '.min',
+    menubar: false,
+    plugins: 'lists link image paste help wordcount',
+    toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | removeformat | help',
+    height: 300,
+    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+  };
   
   // Variables para el cropper
   imageChangedEvent: any = '';
@@ -66,10 +75,11 @@ export class AboutComponent implements OnInit {
     if(confForm.valid){
       let data= {
         imagen_about:this.file,
-        historia_about: confForm.value.historia_about,
-        mision_about: confForm.value.mision_about,
-        vision_about: confForm.value.vision_about,
-        valores_about: confForm.value.valores_about,
+        historia_about: this.config.historia_about,
+        mision_about: this.config.mision_about,
+        vision_about: this.config.vision_about,
+        valores_about: this.config.valores_about,
+        descripcion_about: this.config.descripcion_about,
       }           
       
       this._adminService.actualizar_config_about_admin("617489968545016143869a76",data,this.token).subscribe(
