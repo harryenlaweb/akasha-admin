@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JwtHelperService } from "@auth0/angular-jwt";
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AdminService } from 'src/app/services/admin.service';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 var moment = require('moment');
@@ -16,13 +17,17 @@ export class SidebarComponent implements OnInit {
 
   public config: any = null;
   public url: string;
-  public logo: string = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSIyNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5BZG1pbjwvdGV4dD48L3N2Zz4='; // Logo por defecto (SVG placeholder)
+  public logo: SafeUrl;
+  private logoSvgDefault = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZmlsbD0iI2ZmZiIgZm9udC1zaXplPSIyNCIgZm9udC1mYW1pbHk9IkFyaWFsIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5BZG1pbjwvdGV4dD48L3N2Zz4=';
 
   constructor(
     private _router : Router,
-    private _adminService: AdminService
+    private _adminService: AdminService,
+    private sanitizer: DomSanitizer
   ) { 
     this.url = GLOBAL.url;
+    // Sanitizar el logo por defecto
+    this.logo = this.sanitizer.bypassSecurityTrustUrl(this.logoSvgDefault);
   }
 
   ngOnInit(): void {
@@ -53,7 +58,8 @@ export class SidebarComponent implements OnInit {
       this._adminService.obtener_config_admin(token).subscribe(
         response => {
           if (response.data && response.data.logo_dark) {
-            this.logo = this.url + 'obtener_logo_dark/' + response.data.logo_dark;
+            const logoUrl = this.url + 'obtener_logo_dark/' + response.data.logo_dark;
+            this.logo = this.sanitizer.bypassSecurityTrustUrl(logoUrl);
           }
         },
         error => {
@@ -76,7 +82,7 @@ export class SidebarComponent implements OnInit {
     try {
       const helper = new JwtHelperService();
       const decodedToken = helper.decodeToken(token);
-      return decodedToken && decodedToken.role === 'admin';
+      return decodedToken && decodedToken.rol === 'admin';
     } catch (error) {
       return false;
     }
