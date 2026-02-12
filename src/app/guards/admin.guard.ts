@@ -29,7 +29,7 @@ export class AdminGuard implements CanActivate {
     const requiredRole = route.data['role'];
     if (requiredRole) {
       const identity = this._adminService.getIdentity();
-      if (identity && identity.role !== requiredRole) {
+      if (identity && identity.rol !== requiredRole) {
         iziToast.error({
           title: 'ERROR',
           titleColor: '#FF0000',

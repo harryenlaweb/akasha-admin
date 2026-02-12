@@ -62,7 +62,7 @@ export class AdminService {
     }
 
     
-    return allowRoles.includes(decodedToken['role']);
+    return allowRoles.includes(decodedToken['rol']);
   }
 
   /*--------------------CONFIG-----------------------*/
